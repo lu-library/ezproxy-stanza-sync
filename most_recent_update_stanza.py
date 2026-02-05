@@ -20,12 +20,9 @@ CHECK_DATE = "2024-01-01"
 
 # ===== EMAIL NOTIFICATION =====
 def send_email(updated_items):
-    #sender_email = os.getenv("EMAIL_SENDER")
-    #receiver_email = os.getenv("EMAIL_RECEIVER")
-    #app_password = os.getenv("EMAIL_PASSWORD")
-    sender_email = "swang133@lakeheadu.ca"
-    receiver_email = "swang133@lakeheadu.ca"
-    app_password = "yaln ycyu dhwc ugan"
+    sender_email = os.getenv("EMAIL_SENDER")
+    receiver_email = os.getenv("EMAIL_RECEIVER")
+    app_password = os.getenv("EMAIL_PASSWORD")
     subject = "OCUL EZproxy Stanza Updates Detected"
 
     body = "The following stanzas have been updated:\n\n"
