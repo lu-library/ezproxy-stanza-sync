@@ -26,6 +26,12 @@ Checks whether any stanzas listed in mapping.json have been updated on the OCUL 
 - By default, the comparison date is set to the current system date
 - A custom date can be provided for testing or historical checks
 
+### **most_recent_update_stanza.py**
+Monitors only the recently updated database stanzas from OCUL’s website to efficiently detect changes without querying the full stanza list, reducing load and avoiding page timeouts.
+- Automatically sends email alerts when updates are found
+- Email configuration is managed through environment variables
+- Gmail app password is required (available after enabling 2-step verification)
+
 # **Scope and Limitations**
 - This tool only checks stanzas that exist on the OCUL website.
 - Custom EZproxy stanzas created specifically by Lakehead University Library are not included, since there is no corresponding reference on OCUL’s website for comparison.
