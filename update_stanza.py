@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 
 OCUL_URL = "https://help.oclc.org/Library_Management/EZproxy/EZproxy_database_stanzas/Database_stanzas/EZproxy_database_stanzas_-_All"
+BASE_URL = "https://help.oclc.org"
 
 # ====== CONFIG ======
 
@@ -17,8 +18,6 @@ CHECK_DATE = None
 with open("mapping.json", "r", encoding="utf-8") as f:
     mapping = json.load(f)
 
-# Titles we care about
-target_titles = set(t.lower() for t in mapping.values())
 
 if CHECK_DATE:
     check_date = datetime.strptime(CHECK_DATE, "%Y-%m-%d").date()
@@ -32,9 +31,11 @@ resp.raise_for_status()
 
 soup = BeautifulSoup(resp.text, "html.parser")
 
-updated_items = []
+# =========================
+# Build OCUL data dictionary
+# =========================
 
-BASE_URL = "https://help.oclc.org"
+ocul_data = {}
 
 for li in soup.find_all("li"):
     a = li.find("a")
@@ -47,14 +48,8 @@ for li in soup.find_all("li"):
     if not title or not link:
         continue
 
-    # Only check stanzas we use
-    if title.lower() not in target_titles:
-        continue
-
-    # Get date text from li (after <a>)
     full_text = li.get_text(" ", strip=True)
 
-    # Example: "University of Chicago Press (2022-08-10)"
     if "(" not in full_text:
         continue
 
@@ -65,14 +60,36 @@ for li in soup.find_all("li"):
     except ValueError:
         continue
 
-    if update_date >= check_date:
-        if link.startswith("/"):
-            link = BASE_URL + link
+    if link.startswith("/"):
+        link = BASE_URL + link
 
+    ocul_data[title] = {
+        "date": update_date,
+        "link": link
+    }
+
+# =========================
+# Compare using mapping
+# =========================
+
+updated_items = []
+updated_amount = 0
+
+for filename, title in mapping.items():
+
+    if title not in ocul_data:
+        continue
+
+    ocul_item = ocul_data[title]
+    update_date = ocul_item["date"]
+
+    if update_date >= check_date:
+        updated_amount+=1
         updated_items.append({
+            "filename": filename,
             "title": title,
             "date": str(update_date),
-            "link": link
+            "link": ocul_item["link"]
         })
 
 # ===== OUTPUT =====
@@ -80,8 +97,9 @@ for li in soup.find_all("li"):
 if not updated_items:
     print("No updates found.")
 else:
-    print("Updated stanzas:\n")
+    print("Updated stanzas:",updated_amount,"\n")
     for item in updated_items:
-        print(f"{item['title']}")
-        print(f"  Date: {item['date']}")
-        print(f"  Link: {item['link']}\n")
+        print(f"File: {item['filename']}")
+        print(f"Title: {item['title']}")
+        print(f"Date: {item['date']}")
+        print(f"Link: {item['link']}\n")
