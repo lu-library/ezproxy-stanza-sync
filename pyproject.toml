@@ -1,0 +1,10 @@
+[project]
+name = "ezproxy-stanza-sync"
+version = "0.1.0"
+description = "Tool that checks the update of database stanza on OCUL website automatically"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "requests>=2.32.5",
+]

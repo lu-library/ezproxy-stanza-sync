@@ -32,7 +32,36 @@ Monitors only the recently updated database stanzas from OCUL’s website to eff
 - Email configuration is managed through environment variables
 - Gmail app password is required (available after enabling 2-step verification)
 
+
+# **How it works**
+1. Install uv (Python environment manager),and restart terminal after installation.
+2. Setup Python Environment
+    - Clone the repository:
+        git clone https://github.com/lu-library/ezproxy-stanza-sync
+        cd /path/to/repo
+    - Sync environment and dependencies:
+        uv sync
+    This will:
+        - Install Python 3.10 (if not present)
+        - Create a virtual environment
+        - Install required packages
+3. Email Notification Setup, email credentials are stored using environment variables:
+    Add to ~/.bashrc or ~/.profile:
+        export EMAIL_SENDER="your_email@gmail.com"
+        export EMAIL_RECEIVER="receiver_email@gmail.com"
+        export EMAIL_PASSWORD="your_app_password"
+    Reload:
+        source ~/.bashrc
+    _Gmail app password can be generated after enabling 2-step verification._
+4. Schedule with Cron:
+    Edit cron jobs:
+        crontab -e
+    Example (run every Monday at 2am):
+        0 2 * * 1 cd /path/to/repo && uv run most_recent_update_stanza.py >> stanza.log 2>&1
+
+
 # **Scope and Limitations**
 - This tool only checks stanzas that exist on the OCUL website.
 - Custom EZproxy stanzas created specifically by Lakehead University Library are not included, since there is no corresponding reference on OCUL’s website for comparison.
 - The script does not attempt to automatically download or deploy updated stanzas; it only identifies updated resources and outputs their associated links for further action.
+- most_recent_update_stanza.py is recommended for regular check-ups since update_stanza.py will check from all stanza page, which loads way more slower. However, if there's a change or a big gap between check-ups, please run update_stanza.py first.
