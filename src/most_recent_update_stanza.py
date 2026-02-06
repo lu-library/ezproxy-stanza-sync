@@ -6,10 +6,17 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from loguru import logger
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+LOG_DIR = BASE_DIR / "logs"
 
 OCUL_URL = "https://help.oclc.org/Library_Management/EZproxy/EZproxy_database_stanzas/Database_stanzas/EZproxy_database_stanzas_most_recent"
 BASE_URL = "https://help.oclc.org"
+os.makedirs("logs", exist_ok=True)
+logger.add(LOG_DIR / "stanza.log", rotation="1 week")
 
 # ====== CONFIG ======
 
@@ -48,7 +55,7 @@ def send_email(updated_items):
 
 # ====================
 
-with open("mapping.json", "r", encoding="utf-8") as f:
+with open(DATA_DIR / "mapping.json", "r", encoding="utf-8") as f:
     mapping = json.load(f)
 # Titles we care about
 target_titles = set(t.lower() for t in mapping.values())
@@ -131,15 +138,14 @@ for row in table.find_all("tr"):
 # ===== OUTPUT =====
 
 if not updated_items:
-    print("No updates found.")
+    logger.info("No updates found.")
 else:
-    print("Updated stanzas:",updated_amount,"\n")
-
+    logger.warning("Updated stanzas: {}", updated_amount)
+    for item in updated_items:
+        logger.info(f"File: {item['filename']}")
+        logger.info(f"Title: {item['title']}")
+        logger.info(f"Date: {item['date']}")
+        logger.info(f"Link: {item['link']}\n")
+    
     # Send email notification
     send_email(updated_items)
-
-    for item in updated_items:
-        print(f"File: {item['filename']}")
-        print(f"Title: {item['title']}")
-        print(f"Date: {item['date']}")
-        print(f"Link: {item['link']}\n")
