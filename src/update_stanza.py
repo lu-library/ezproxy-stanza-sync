@@ -2,108 +2,105 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from datetime import datetime
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-
-OCUL_URL = "https://help.oclc.org/Library_Management/EZproxy/EZproxy_database_stanzas/Database_stanzas/EZproxy_database_stanzas_-_All"
-BASE_URL = "https://help.oclc.org"
-
-# ====== CONFIG ======
-
-# Set to None to use today's date automatically
-CHECK_DATE = None
-# Or set manually like "2024-01-01" for testing
-#CHECK_DATE = "2024-01-01"
-
-# ====================
-
-with open(DATA_DIR / "mapping.json", "r", encoding="utf-8") as f:
-    mapping = json.load(f)
+from .logging_config import logger
+from .config import DATA_DIR, OCUL_ALL_URL, BASE_URL
+from .send_email import update_email
 
 
-if CHECK_DATE:
-    check_date = datetime.strptime(CHECK_DATE, "%Y-%m-%d").date()
-else:
-    check_date = datetime.today().date()
+# ===== CHECK ALL UPDATES =====
+def check_all_updates(CHECK_DATE):
+    with open(DATA_DIR / "mapping.json", "r", encoding="utf-8") as f:
+        mapping = json.load(f)
+    # Titles we care about
+    target_titles = set(t.lower() for t in mapping.values())
 
-print(f"Checking updates since: {check_date}\n")
+    if CHECK_DATE:
+        check_date = datetime.strptime(CHECK_DATE, "%Y-%m-%d").date()
+    else:
+        check_date = datetime.today().date()
 
-resp = requests.get(OCUL_URL, timeout=30)
-resp.raise_for_status()
+    print(f"Checking updates since: {check_date}\n")
 
-soup = BeautifulSoup(resp.text, "html.parser")
+    resp = requests.get(OCUL_ALL_URL, timeout=30)
+    resp.raise_for_status()
 
-# =========================
-# Build OCUL data dictionary
-# =========================
+    soup = BeautifulSoup(resp.text, "html.parser")
 
-ocul_data = {}
+# ==== Build OCUL data dictionary ====
+    ocul_data = {}
 
-for li in soup.find_all("li"):
-    a = li.find("a")
-    if not a:
-        continue
+    for li in soup.find_all("li"):
+        a = li.find("a")
+        if not a:
+            continue
 
-    title = a.get_text(strip=True)
-    link = a.get("href")
+        title = a.get_text(strip=True)
+        link = a.get("href")
 
-    if not title or not link:
-        continue
+        if not title or not link:
+            continue
 
-    full_text = li.get_text(" ", strip=True)
+        full_text = li.get_text(" ", strip=True)
 
-    if "(" not in full_text:
-        continue
+        if "(" not in full_text:
+            continue
 
-    date_part = full_text.split("(")[-1].replace(")", "").strip()
+        date_part = full_text.split("(")[-1].replace(")", "").strip()
 
-    try:
-        update_date = datetime.strptime(date_part, "%Y-%m-%d").date()
-    except ValueError:
-        continue
+        try:
+            update_date = datetime.strptime(date_part, "%Y-%m-%d").date()
+        except ValueError:
+            continue
 
-    if link.startswith("/"):
-        link = BASE_URL + link
+        if link.startswith("/"):
+            link = BASE_URL + link
 
-    ocul_data[title] = {
-        "date": update_date,
-        "link": link
-    }
+        ocul_data[title] = {
+            "date": update_date,
+            "link": link
+        }
 
-# =========================
-# Compare using mapping
-# =========================
+# ==== Compare using mapping =====
+    logger.info("Starting full EZproxy stanza update check.")
+    updated_items = []
 
-updated_items = []
-updated_amount = 0
+    for filename, title in mapping.items():
 
-for filename, title in mapping.items():
+        if title not in ocul_data:
+            continue
 
-    if title not in ocul_data:
-        continue
+        ocul_item = ocul_data[title]
+        update_date = ocul_item["date"]
 
-    ocul_item = ocul_data[title]
-    update_date = ocul_item["date"]
+        if update_date >= check_date:
+            updated_items.append({
+                "filename": filename,
+                "title": title,
+                "date": str(update_date),
+                "link": ocul_item["link"]
+            })
 
-    if update_date >= check_date:
-        updated_amount+=1
-        updated_items.append({
-            "filename": filename,
-            "title": title,
-            "date": str(update_date),
-            "link": ocul_item["link"]
-        })
+    if updated_items:
+        logger.warning("Updated stanzas: {}", len(updated_items))
+        for item in updated_items:
+            logger.info(
+            "File: {} | Title: {} | Date: {}",
+            item["filename"],
+            item["title"],
+            item["date"]
+        )
+        try:
+            update_email(updated_items)
+        except Exception:
+            logger.warning(
+                "Updates found but failed to send email notification",
+                exc_info=True
+            )
+    else:
+        logger.info("No updates found.")
+        return
 
-# ===== OUTPUT =====
 
-if not updated_items:
-    print("No updates found.")
-else:
-    print("Updated stanzas:",updated_amount,"\n")
-    for item in updated_items:
-        print(f"File: {item['filename']}")
-        print(f"Title: {item['title']}")
-        print(f"Date: {item['date']}")
-        print(f"Link: {item['link']}\n")
+if __name__ == "__main__":
+    CHECK_DATE = "2026-01-01"  # or NONE for current date
+    check_all_updates(CHECK_DATE)

@@ -1,9 +1,7 @@
 import csv
 import json
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
+from .logging_config import logger
+from .config import DATA_DIR
 
 SOURCE_FILE = DATA_DIR / "mapping_source.csv"
 OUTPUT_FILE = DATA_DIR / "mapping.json"
@@ -23,4 +21,4 @@ with open(SOURCE_FILE, newline="", encoding="utf-8") as f:
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     json.dump(mapping, f, indent=2, ensure_ascii=False)
 
-print(f"Generated {OUTPUT_FILE} with {len(mapping)} entries.")
+logger.info(f"Generated {OUTPUT_FILE} with {len(mapping)} entries.")

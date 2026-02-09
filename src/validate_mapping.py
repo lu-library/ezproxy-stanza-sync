@@ -1,20 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-
-OCUL_URL = "https://help.oclc.org/Library_Management/EZproxy/EZproxy_database_stanzas/Database_stanzas/EZproxy_database_stanzas_-_All"
-
+from .config import DATA_DIR, OCUL_ALL_URL
 
 with open(DATA_DIR / "mapping.json", "r", encoding="utf-8") as f:
     mapping = json.load(f)
 
-print("Fetching OCUL page...")
-
-resp = requests.get(OCUL_URL, timeout=30)
+resp = requests.get(OCUL_ALL_URL, timeout=30)
 resp.raise_for_status()
 
 soup = BeautifulSoup(resp.text, "html.parser")
