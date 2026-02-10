@@ -11,8 +11,8 @@ MAX_RETRIES = 3
 RETRY_DELAY = 3600  # 1 hour
 # Set to None to use today's date automatically
 CHECK_DATE = None
-# Or set manually like "2024-01-01" for testing
-CHECK_DATE = "2025-01-01"
+# Or set manually like "2026-01-01" for testing
+#CHECK_DATE = "2025-01-01"
 
 # ====================
 

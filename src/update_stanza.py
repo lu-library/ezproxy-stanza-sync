@@ -102,5 +102,12 @@ def check_all_updates(CHECK_DATE):
 
 
 if __name__ == "__main__":
-    CHECK_DATE = "2026-01-01"  # or NONE for current date
-    check_all_updates(CHECK_DATE)
+    CHECK_DATE = None # or custom date
+    while True:
+        try:
+            CHECK_DATE = input("Press ENTER for current date or input a custom date in YYYY-MM-DD: ")
+            check_all_updates(CHECK_DATE)
+            break
+        except Exception:
+            print("DATE FORMART ERROR. Please try again.")
+            continue
