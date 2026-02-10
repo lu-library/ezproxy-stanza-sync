@@ -34,12 +34,12 @@ Initializes Loguru logging configuration, including:
 Generates mapping.json from mapping_source.csv, creating a structured mapping between local stanza filenames and OCUL stanza titles.
 
 ### **validate_mapping.py**
-Validates whether each stanza title in mapping.json exists on the OCUL website.
-**_Note: This validation uses strict title matching._**
+Validates whether each stanza title in mapping.json exists on the OCUL website.    
+**_Note: This validation uses strict title matching._**    
 Occasionally, OCUL may update or rename stanza titles (for example, University of Chicago Press Journals was later changed to University of Chicago Press), which may cause mismatches even though the stanza refers to the same resource.
 
 ### **update_stanza.py**
-Checks whether any stanzas listed in mapping.json have been updated on the OCUL website after a specified date. By default, the comparison date is set to the current system date, but a custom date can be provided. **This script is intended for manual or infrequent use (e.g. initial deployment or long gaps between checks).**
+Checks whether any stanzas listed in mapping.json have been updated on the OCUL website after a specified date. By default, the comparison date is set to the current system date, but a custom date can be provided. **_This script is intended for manual or infrequent use (e.g. initial deployment or long gaps between checks)._**
 
 ### **most_recent_update_stanza.py**
 Monitors only the “Recently updated database stanzas” section on OCUL’s website.
@@ -49,6 +49,9 @@ This approach:
 - Minimizes the risk of page timeouts
 - By default, the comparison date is set to the current system date
 This script is recommended for regular (weekly) automated runs.
+
+### **diff_stanza.py**
+Handles difference between local version and updated version. Save .diff file to /data/diff.   
 
 ### **send_email.py**
 Handles email notifications.
@@ -70,15 +73,18 @@ The primary entry point for scheduled execution. Runs the **most recent update c
         - Install Python 3.10 (if not present)
         - Create a virtual environment
         - Install required packages
-3. Email Notification Setup, email credentials are stored using environment variables:
-    Add to ~/.bashrc or ~/.profile:   
-        - export EMAIL_SENDER="your_email@gmail.com"
-        - export EMAIL_RECEIVER="receiver_email@gmail.com"
-        - export EMAIL_PASSWORD="your_app_password"
+3. Email Notification Setup, email credentials are stored using environment variables:    
+    Add to ~/.bashrc or ~/.profile:    
+        export EMAIL_SENDER="your_email@gmail.com"     
+        export EMAIL_RECEIVER="receiver_email@gmail.com"      
+        export EMAIL_PASSWORD="your_app_password"      
     Reload:   
         source ~/.bashrc   
     _Gmail app password can be generated after enabling 2-step verification._   
-4. Schedule with Cron:
+4. Initial Update Check:
+    cd /path/to/ezproxy-stanza-sync    
+    uv run -m src.update_stanza    
+5. Schedule with Cron:     
     Edit cron jobs:   
         crontab -e   
     Example (run every Monday at 2am):   
@@ -86,13 +92,7 @@ The primary entry point for scheduled execution. Runs the **most recent update c
 
 
 # **Scope and Limitations**
-This tool only checks EZproxy stanzas that exist on the OCUL website.
-
-Custom EZproxy stanzas created specifically by Lakehead University Library are not included, as there is no corresponding OCUL reference for comparison.
-
-The tool does not automatically download or deploy updated stanzas.
-It only identifies updates and provides relevant links for review.
-
-most_recent_update_stanza.py is recommended for regular monitoring.
-
-If there has been a long gap between checks or significant changes are suspected, run update_stanza.py manually before resuming scheduled checks.
+1. This tool only checks EZproxy stanzas that exist on the OCUL website.
+2. Custom EZproxy stanzas created specifically by Lakehead University Library are not included, as there is no corresponding OCUL reference for comparison.
+3. The tool does not automatically download or deploy updated stanzas. It only identifies updates and provides relevant links for review.
+5. most_recent_update_stanza.py is recommended for regular monitoring. If there has been a long gap between checks or significant changes are suspected, run update_stanza.py manually before resuming scheduled checks.

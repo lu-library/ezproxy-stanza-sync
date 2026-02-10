@@ -5,6 +5,7 @@ from pathlib import Path
 from .logging_config import logger
 from .most_recent_update_stanza import check_most_recent_updates
 from .send_email import update_email, error_email
+from .diff_stanza import process_diffs, save_diff_file
 
 # ====== CONFIG ======
 MAX_RETRIES = 3
@@ -12,14 +13,21 @@ RETRY_DELAY = 3600  # 1 hour
 # Set to None to use today's date automatically
 CHECK_DATE = None
 # Or set manually like "2026-01-01" for testing
-#CHECK_DATE = "2025-01-01"
+#CHECK_DATE = "2026-01-01"
 
 # ====================
 
+    
 def run_job():
     updated_items = check_most_recent_updates(CHECK_DATE)
 
     if updated_items:
+        diff_results = process_diffs(updated_items)
+        for r in diff_results:
+            diff_path = save_diff_file(r["filename"], r["diff"])
+            logger.warning("Diff detected for {}", r["filename"])
+            logger.info("Diff saved to {}", diff_path)
+            
         logger.warning("Updated stanzas: {}", len(updated_items))
         for item in updated_items:
             logger.info(f"File: {item['filename']}")

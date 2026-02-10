@@ -5,6 +5,7 @@ from datetime import datetime
 from .logging_config import logger
 from .config import DATA_DIR, OCUL_ALL_URL, BASE_URL
 from .send_email import update_email
+from .diff_stanza import process_diffs, save_diff_file
 
 
 # ===== CHECK ALL UPDATES =====
@@ -81,6 +82,12 @@ def check_all_updates(CHECK_DATE):
             })
 
     if updated_items:
+
+        diff_results = process_diffs(updated_items) 
+        for r in diff_results:
+            diff_path = save_diff_file(r["filename"], r["diff"])
+            logger.info("Diff saved to {}", diff_path)
+
         logger.warning("Updated stanzas: {}", len(updated_items))
         for item in updated_items:
             logger.info(

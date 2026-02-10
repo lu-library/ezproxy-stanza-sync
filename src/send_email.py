@@ -40,7 +40,7 @@ def update_email(updated_items):
     sender_email, receiver_email, app_password = get_email_config()
 
     subject = "OCUL EZproxy Stanza Updates Detected"
-    body = "The following stanzas have been updated:\n\n"
+    body = "The following stanzas have been updated (full .diff files are saved under /data/diff.):\n\n"
 
     for item in updated_items:
         body += (

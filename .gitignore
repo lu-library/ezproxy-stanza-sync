@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 .venv/
 
+# Data
+data/stanzas/
+data/diff/
+
 # Logs
 logs/
 *.log
