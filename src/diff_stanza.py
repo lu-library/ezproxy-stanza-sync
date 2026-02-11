@@ -95,11 +95,14 @@ def process_diffs(updated_items):
             )
             continue
 
-        except Exception:
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(tb,"\n\n\n")
             logger.error(
-                "Failed to process diff for {}. Access details at {}",
+                "Failed to process diff for {}. Access details at {}.\n Error {}",
                 item["filename"],
-                item["link"]
+                item["link"],
+                tb
             )
             continue
 
