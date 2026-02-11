@@ -1,4 +1,5 @@
 import requests
+import traceback
 from bs4 import BeautifulSoup
 from loguru import logger
 from urllib.parse import urljoin
@@ -6,7 +7,10 @@ from pathlib import Path
 import difflib
 from datetime import datetime
 from .config import DIFF_DIR, DATA_DIR
+from .send_email import error_email
 
+class StanzaNotFoundError(RuntimeError):
+    pass
 
 def fetch_stanza_text(stanza_url: str) -> str:
     """
@@ -39,7 +43,7 @@ def fetch_stanza_text(stanza_url: str) -> str:
         #logger.info("Using embedded <pre> stanza")
         return pre.get_text().strip()
 
-    raise RuntimeError(f"Could not locate stanza text on OCUL page: {stanza_url}")
+    raise StanzaNotFoundError(f"Could not locate stanza text on OCUL page: {stanza_url}")
 
 
 def load_local_stanza(file_path: Path) -> str:
@@ -81,16 +85,23 @@ def process_diffs(updated_items):
                 **item,
                 "diff": diff_text
             })
-
-        except Exception as e:
-            tb = traceback.format_exc()
+    
+        except StanzaNotFoundError:
             logger.error(
-                "Failed to process diff for {}. Access details at {}",
+                "Stanza text not found for {}. OCUL page: {}",
                 item["filename"],
                 item["link"],
                 exc_info=True
             )
-            error_email(tb)
+            continue
+
+        except Exception:
+            logger.error(
+                "Failed to process diff for {}. Access details at {}",
+                item["filename"],
+                item["link"]
+            )
+            continue
 
     return results
 

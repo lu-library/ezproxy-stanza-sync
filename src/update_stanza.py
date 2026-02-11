@@ -109,12 +109,17 @@ def check_all_updates(CHECK_DATE):
 
 
 if __name__ == "__main__":
-    CHECK_DATE = None # or custom date
     while True:
+        CHECK_DATE = input("Press ENTER for current date or input a custom date in YYYY-MM-DD: ").strip()
+
         try:
-            CHECK_DATE = input("Press ENTER for current date or input a custom date in YYYY-MM-DD: ")
-            check_all_updates(CHECK_DATE)
+            check_all_updates(CHECK_DATE or None)
             break
-        except Exception:
-            print("DATE FORMART ERROR. Please try again.")
+
+        except ValueError:
+            print("DATE FORMAT ERROR. Please use YYYY-MM-DD.")
             continue
+
+        except Exception:
+            logger.exception("Unexpected error occurred while running update_stanza")
+            break
