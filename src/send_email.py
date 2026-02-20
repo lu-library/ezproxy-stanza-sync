@@ -36,18 +36,20 @@ def _send_email(sender, receiver, password, subject, body):
 
 
 
-def update_email(updated_items):
+def update_email(diff_results):
     sender_email, receiver_email, app_password = get_email_config()
 
-    subject = "OCUL EZproxy Stanza Updates Detected"
+    subject = "OCLC EZproxy Stanza Updates Detected"
     body = "The following stanzas have been updated (full .diff files are saved under /data/diff.):\n\n"
 
-    for item in updated_items:
+    for item in diff_results:
         body += (
             f"File: {item['filename']}\n"
             f"Title: {item['title']}\n"
             f"Date: {item['date']}\n"
-            f"Link: {item['link']}\n\n"
+            f"Link: {item['link']}\n"
+            f"Diff_Path: {item['diff_path']}\n\n"
+
         )
 
     _send_email(sender_email, receiver_email, app_password, subject, body)

@@ -7,12 +7,12 @@ DATA_DIR = BASE_DIR / "data"
 DIFF_DIR = DATA_DIR / "diff"
 LOG_DIR = BASE_DIR / "logs"
 
-OCUL_MOST_RECENT_URL = (
+OCLC_MOST_RECENT_URL = (
     "https://help.oclc.org/Library_Management/EZproxy/"
     "EZproxy_database_stanzas/Database_stanzas/"
     "EZproxy_database_stanzas_most_recent"
 )
-OCUL_ALL_URL = (
+OCLC_ALL_URL = (
     "https://help.oclc.org/Library_Management/EZproxy/"
     "EZproxy_database_stanzas/Database_stanzas/"
     "EZproxy_database_stanzas_-_All"

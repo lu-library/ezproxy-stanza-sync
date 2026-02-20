@@ -13,7 +13,7 @@ RETRY_DELAY = 3600  # 1 hour
 # Set to None to use today's date automatically
 CHECK_DATE = None
 # Or set manually like "2026-01-01" for testing
-#CHECK_DATE = "2026-01-01"
+CHECK_DATE = "2026-01-01"
 
 # ====================
 
@@ -23,19 +23,22 @@ def run_job():
 
     if updated_items:
         diff_results = process_diffs(updated_items)
-        for r in diff_results:
-            diff_path = save_diff_file(r["filename"], r["diff"])
-            logger.warning("Diff detected for {}", r["filename"])
-            logger.info("Diff saved to {}", diff_path)
             
-        logger.warning("Updated stanzas: {}", len(updated_items))
+        logger.warning("Stanzas updated after the specified date: {}", len(updated_items))
         for item in updated_items:
             logger.info(f"File: {item['filename']}")
             logger.info(f"Title: {item['title']}")
             logger.info(f"Date: {item['date']}")
             logger.info(f"Link: {item['link']}\n")
+
+        logger.warning("Stanzas updated after the specified date that are NOT YET synced locally: {}", len(diff_results))
+        for r in diff_results:
+            diff_path = save_diff_file(r["filename"], r["diff"])
+            logger.warning("Diff detected for {}", r["filename"])
+            logger.info("Diff saved to {}", diff_path)
+            r["diff_path"] = diff_path
         try:
-            update_email(updated_items)
+            update_email(diff_results)
         except Exception:
             logger.warning(
                 "Updates found but failed to send email notification",

@@ -1,133 +1,155 @@
-filename,title
-accessengineering.txt,Access Engineering
-acf-film.txt,ACF Streaming Service
-acm.txt,ACM Digital Library
-acs.txt,American Chemical Society
-ajsonline.txt,American Journal of Science
-akjournals.txt,Akademiai Kiado
-alexanderstreet.txt,Alexander Street Press
-amdigital2025.txt,Adam Matthew Digital
-annualReviews.txt,Annual Reviews
-anthrosource.txt,AnthroSource
-aom.txt,Academy of Management
-apha.txt,American Public Health Association
-aps.txt,APS Journals
-asce.txt,American Society of Civil Engineers
-asm.txt,American Society for Microbiology
-astm.txt,ASTM Compass 2.0
-atozmapsonline.txt,AtoZ Maps Online
-birdsna.txt,Birds of the World (formerly Birds of North America) 
-bloomsburydigitalresources.txt,Bloomsbury Digital Resources
-brepolsonline.txt,Brepols Online
-brillonline.txt,BrillOnline
-britannica.txt,Britannica Academic
-browzine.txt,BrowZine by Third Iron
-cabells.txt,Cabells Directories
-cairn.txt,Cairn
-cambridgecore.txt,Cambridge Core
-careercruising.txt,Career Cruising
-cfrl.txt,Center for Research Libraries
-chicagomanual.txt,Chicago Manual of Style Online
-choicereviews.txt,Choice Reviews
-chronicle.txt,Chronicle of Higher Education, The
-clcd.txt,Children's Literature Comprehensive Database (CLCD)
-clinicalkey.txt,ClinicalKey and Embase
-conferenceboard.txt,Conference Board of Canada
-cookielaw.txt,CookieLaw
-currenthistory.txt,Current History
-degruyter.txt,De Gruyter Online
-desLibris.txt,desLibris
-discovermagazine.txt,Discover Magazine
-dukepress.txt,Duke University Press Books and Journals
-ebscohost.txt,EBSCO Information Services
-ecsdl.txt,"Electrochemical Society, Inc."
-elgaronline.txt,Elgaronline
-emeraldinsight.txt,Emerald Insight
-endocrine.txt,Endocrine Society
-exacteditions.txt,Exact Editions
-familiesinsocietyjournal.txt,Families in Society Journal
-filmplatform.txt,Film Platform
-foreignpolicy.txt,Foreign Policy
-gale.txt,Gale Products
-googlescholar.txt,Google Scholar
-hbcpnetbase.txt,Handbook of Chemistry and Physics
-heinonline.txt,HeinOnline
-hepgjournals.txt,Harvard Education Publishing Group
-historycooperative.txt,History Cooperative journals
-human_kinetics.txt,Human Kinetics
-ibisworld.txt,IBISWorld
-ieee.txt,IEEE Xplore
-igi_global.txt,IGI Global
-impanpl.txt,Institute of Mathematics of the Polish Academy of Sciences
-infobaselearning.txt,Infobaselearning
-informahealthcare.txt,Informa Healthcare
-ingenta.txt,INGENTAconnect
-iop.txt,Institute of Physics
-iospress.txt,IOS Press
-irwinlaw.txt,vLex
-istructe.txt,Structural Engineer
-iter.txt,Iter: Gateway to the Middle Ages and Renaissance
-jama.txt,JAMA
-jstor.txt,JSTOR
-kanopy.txt,Kanopy
-karger.txt,Karger
-kluwerlaw.txt,Kluwer Law
-knotia.txt,Knotia (CPA)
-knovel.txt,Knovel
-lexisnexis.txt,LexisNexis
-llmcdigital.txt,LLMC Digital
-maxplanckintllaw.txt,Max Planck Encyclopedia of Public International Law 
-mcintyre.txt,McIntyre Media
-metapress.txt,MetaPress
-mitpressdirect.txt,MIT Press Direct
-mitpressjournals.txt,MIT Press Journals
-nature_publishing_group.txt,Nature Publishing
-ncte.txt,National Council of Teachers of English
-nctm.txt,National Council of Teachers of Mathematics
-nfb.txt,National Film Board of Canada
-nlxpm.txt,InteLex Past Masters
-nrcresearchpress.txt,Canadian Science Publishing (formerly NRC Research Press)
-nybooks.txt,New York Review of Books
-odesi.txt,Odesi
-oecdilibrary.txt,OECD iLibrary
-oed.txt,Oxford English Dictionary (OED)
-oldcitypublishing.txt,Old City Publishing
-ons.txt,Oncology Nursing Society
-oxforddnb.txt,Oxford Dictionary of National Biography
-oxfordjournals.txt,Oxford Academic (formerly Oxford Journals)
-oxfordreference.txt,Oxford Reference
-oxfordscholarship.txt,Oxford Scholarship Online (OSO)
-pdcc.txt,Philosophy Documentation Center
-physiology.txt,American Physiological Society
-plantbiologists.txt,American Society of Plant Biologists
-projecteuclid.txt,Project Euclid
-projectmuse.txt,Project Muse
-proquest.txt,ProQuest
-psychiatrist.txt,Psychiatrist.com
-psychiatryonline.txt,PsychiatryOnline
-psychotherapy.txt,Psychotherapy.net
-pubmed.txt,PubMed
-royal_society_chemistry.txt,Royal Society of Chemistry
-rupress.txt,Rockefeller University Press
-sagamorepub.txt,Sagamore Publishing
-sagepub.txt,SAGE Publications and Journals
-salempress.txt,Salem Press
-science.txt,Science - AAAS
-sciencedirect.txt,Elsevier ScienceDirect and Scopus
-scientificamerican.txt,Scientific American
-scitation.txt,AIPP Publishing Platform (formerly Scitation)
-springer.txt,SpringerLink
-statista.txt,Statista
-tandfebooks.txt,Taylor & Francis eBooks
-tandfonline.txt,Taylor and Francis Online
-teenhealthandwellness.txt,Teen Health and Wellness
-thiemeconnect.txt,Thieme
-tumblebooks.txt,Tumblebooks 
-uchicago.txt,University of Chicago Press
-ucpress.txt,University of California Press
-universitypressscholarship.txt,University Press Scholarship Online
-uptodate.txt,UpToDate
-utorontopress.txt,University of Toronto Press Journals
-webofknowledge.txt,Web of Science (formerly Web of Knowledge)
-wileyonlinelibrary.txt,Wiley Online Library
-worldscientific.txt,World Scientific Publishing
+﻿filename,title
+accessengineering,Access Engineering
+accsci,Access Science
+acf-film,ACF Streaming Service
+acm,ACM Digital Library
+acoustical_society_america,Acoustical Society of America
+acs,American Chemical Society
+ajsonline,American Journal of Science
+ajtmh,American Society of Tropical Medicine and Hygiene
+akjournals,Akademiai Kiado
+alexanderstreet,Alexander Street Press
+amdigital202511,Adam Matthew Digital
+americanphytopathologicalsociety,American Phytopathological Society
+annualReviews,Annual Reviews
+anthrosource,AnthroSource
+aom,Academy of Management
+archivaria,Archivaria
+asce,American Society of Civil Engineers
+asm,American Society for Microbiology
+astm,ASTM Compass 2.0
+atlantic,"Atlantic Monthly, The"
+atozmapsonline,AtoZ Maps Online
+bioone,BioOne Complete
+birdsna,Birds of the World (formerly Birds of North America)
+blackwellsynergy,Blackwell-Synergy
+bloomsburydigitalresources,Bloomsbury Digital Resources
+brepolsonline,Brepols Online
+brillonline,BrillOnline
+britannica,Britannica Academic
+britannica_estax,Britannica E-Stax
+cabells,Cabells Directories
+cairn,Cairn
+canadianelectroniclibrary,Canadian Electronic Library
+canadian-nurse,Canadian Nurse
+careercruising,Career Cruising
+casw-acts,Canadian Association of Social Workers
+cfrl,Center for Research Libraries
+chicagomanual,Chicago Manual of Style Online
+choicereviews,Choice Reviews
+chronicle,"Chronicle of Higher Education, The"
+cjc,Canadian Journal of Counselling
+clcd,Children's Literature Comprehensive Database (CLCD)
+clinicalkey,ClinicalKey and Embase
+csiro,CSIRO Publishing Ebooks and Journals (formerly CSIRO Journals)
+currenthistory,Current History
+degruyter,De Gruyter Online
+desLibris,DesLibris
+discovermagazine,Discover Magazine
+docuseek2,Docuseek2
+dukepress,Duke University Press Books and Journals
+ebscohost,EBSCO Information Services
+elgaronline,Elgaronline
+embase,Embase
+endocrine,Endocrine Society
+europresse,Europresse/Eureka
+exacteditions,Exact Editions
+familiesinsocietyjournal,Families in Society Journal
+filmplatform,Film Platform
+firstsearch,OCLC FirstSearch
+foreignpolicy,Foreign Policy
+gale,Gale Products
+geography,Geographical Association
+gmid,Passport (Euromonitor International)
+googlescholar,Google Scholar
+hbcpnetbase,Handbook of Chemistry and Physics
+heinonline,HeinOnline
+hepgjournals,Harvard Education Publishing Group
+historycooperative,History Cooperative journals
+human_kinetics,Human Kinetics
+ibisworld,IBISWorld
+ieee,IEEE Xplore
+igi_global,IGI Global
+impanpl,Institute of Mathematics of the Polish Academy of Sciences
+infobaselearning,Infobaselearning
+informaworld,Informaworld
+ingenta,INGENTAconnect
+iop,Institute of Physics
+iospress,IOS Press
+istructe,Structural Engineer
+iter,Iter: Gateway to the Middle Ages and Renaissance
+jama,JAMA
+jotes,"Electrochemical Society, Inc."
+Journal_of_Studies_on_Alcohol_and_Drugs,Journal of Studies on Alcohol and Drugs
+jstor,JSTOR
+kanopy,Kanopy
+karger,Karger
+kluwerlaw,Kluwer Law
+knotia,Knotia (CPA)
+knovel,Knovel
+lexisnexis,LexisNexis
+llmcdigital,LLMC Digital
+longwoods,Canadian Journal of Nursing Leadership
+mathematical_reports,Mathematical Reports
+maxplanckintllaw,Max Planck Encyclopedia of Public International Law
+mcintyre,McIntyre Media
+metapress,Metapress
+mitpressdirect,MIT Press Direct
+mitpressjournals,MIT Press Journals
+msp,Mathematical Sciences Publishers
+msvu,Canadian Journal for the Study of Adult Education
+myilibrary,MyiLibrary
+myrxtx,CPS (formerly RxTx (CPhA))
+nature_publishing_group,Nature Publishing
+ncte,National Council of Teachers of English
+nctm,National Council of Teachers of Mathematics
+new_left_review,New Left Review
+nfb,National Film Board of Canada
+nlxpm,Intelex Past Masters
+nrcresearchpress,Canadian Science Publishing (formerly NRC Research Press)
+nybooks,New York Review of Books
+odesi,Odesi
+oecdilibrary,OECD iLibrary
+oed,Oxford English Dictionary (OED)
+oldcitypublishing,Old City Publishing
+ons,Oncology Nursing Society
+osapublishing,Optica Publishing Group (formerly OSA)
+ovid,Ovid
+oxforddnb,Oxford Dictionary of National Biography
+oxfordjournals,Oxford Academic (formerly Oxford Journals)
+oxfordreference,Oxford Reference
+oxfordscholarship,Oxford Scholarship Online (OSO)
+pdcc,Philosophy Documentation Center
+philologique,L'Annee Philologique
+physiology,American Physiological Society
+projecteuclid,Project Euclid
+projectmuse,Project Muse
+proquest,ProQuest
+psychiatryonline,PsychiatryOnline
+psychotherapy,Psychotherapy.net
+pubmed,PubMed
+royal_society_chemistry,Royal Society of Chemistry
+rupress,Rockefeller University Press
+sagamorepub,Sagamore Publishing
+sagepub,SAGE Publications and Journals
+salempress,Salem Press
+science,Science - AAAS
+sciencedirect,Elsevier ScienceDirect and Scopus
+scientificamerican,Scientific American
+scitation,AIPP Publishing Platform (formerly Scitation)
+scival,SciVal 
+springer,SpringerLink
+statista,Statista
+tandfebooks,Taylor & Francis eBooks
+tandfonline,Taylor and Francis Online
+thiemeconnect,Thieme
+tumblebooks,Tumblebooks
+uchicago,University of Chicago Press
+ucpress,University of California Press
+universitypressscholarship,University Press Scholarship Online
+utorontopress,University of Toronto Press Journals
+vitalsource,VitalSource Resolver
+webofknowledge,Web of Science (formerly Web of Knowledge)
+wilddiseases,Journal of Wildlife Diseases
+wileyonlinelibrary,Wiley Online Library
+worldscientific,World Scientific Publishing

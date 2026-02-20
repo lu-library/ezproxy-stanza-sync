@@ -14,7 +14,7 @@ class StanzaNotFoundError(RuntimeError):
 
 def fetch_stanza_text(stanza_url: str) -> str:
     """
-    Fetch stanza text from OCUL.
+    Fetch stanza text from OCLC.
     Supports:
     1. <pre>...</pre> embedded content
     2. External .txt link inside <div class="highlight-box">
@@ -43,7 +43,7 @@ def fetch_stanza_text(stanza_url: str) -> str:
         #logger.info("Using embedded <pre> stanza")
         return pre.get_text().strip()
 
-    raise StanzaNotFoundError(f"Could not locate stanza text on OCUL page: {stanza_url}")
+    raise StanzaNotFoundError(f"Could not locate stanza text on OCLC page: {stanza_url}")
 
 
 def load_local_stanza(file_path: Path) -> str:
@@ -63,7 +63,7 @@ def diff_stanza(local_text: str, remote_text: str) -> str:
         local_lines,
         remote_lines,
         fromfile="local",
-        tofile="ocul",
+        tofile="oclc",
         lineterm=""
     )
 
@@ -80,15 +80,15 @@ def process_diffs(updated_items):
             remote_text = fetch_stanza_text(item["link"])
             local_text = load_local_stanza(local_path)
             diff_text = diff_stanza(local_text, remote_text)
-
-            results.append({
-                **item,
-                "diff": diff_text
-            })
-    
+            if diff_text:
+                results.append({
+                    **item,
+                    "diff": diff_text
+                })
+                diff_text = None
         except StanzaNotFoundError:
             logger.error(
-                "Stanza text not found for {}. OCUL page: {}",
+                "Stanza text not found for {}. OCLC page: {}",
                 item["filename"],
                 item["link"],
                 exc_info=True

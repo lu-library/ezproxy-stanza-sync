@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from datetime import datetime
-from .config import DATA_DIR, OCUL_MOST_RECENT_URL, BASE_URL
+from .config import DATA_DIR, OCLC_MOST_RECENT_URL, BASE_URL
 
 
 # ===== CHECK MOST RECENT UPDATES =====
@@ -17,7 +17,7 @@ def check_most_recent_updates(CHECK_DATE):
     else:
         check_date = datetime.today().date()
 
-    resp = requests.get(OCUL_MOST_RECENT_URL, timeout=30)
+    resp = requests.get(OCLC_MOST_RECENT_URL, timeout=30)
     resp.raise_for_status()
 
     soup = BeautifulSoup(resp.text, "html.parser")

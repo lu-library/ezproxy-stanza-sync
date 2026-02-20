@@ -8,11 +8,11 @@ OUTPUT_FILE = DATA_DIR / "mapping.json"
 
 mapping = {}
 
-with open(SOURCE_FILE, newline="", encoding="utf-8") as f:
+with open(SOURCE_FILE, newline="", encoding="utf-8-sig") as f:
     reader = csv.DictReader(f)
 
     for row in reader:
-        filename = row["filename"].strip()
+        filename = row["filename"].strip()+".txt"
         title = row["title"].strip()
 
         if filename and title:
