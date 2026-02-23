@@ -18,7 +18,7 @@ CHECK_DATE = "2026-01-01"
 # ====================
 
     
-def run_job():
+def execute_sync():
     updated_items = check_most_recent_updates(CHECK_DATE)
 
     if updated_items:
@@ -48,12 +48,12 @@ def run_job():
         logger.info("No updates found.")
 
 
-def main():
+def run():
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             logger.info("Run attempt {}/{}", attempt, MAX_RETRIES)
-            run_job()
-            logger.info("Job finished successfully")
+            execute_sync()
+            logger.info("Sync finished successfully")
             return
         except Exception as e:
             tb = traceback.format_exc()
@@ -68,4 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

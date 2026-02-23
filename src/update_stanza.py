@@ -107,11 +107,9 @@ def check_all_updates(CHECK_DATE):
         logger.info("No updates found.")
         return
 
-
-if __name__ == "__main__":
+def run():
     while True:
         CHECK_DATE = input("Press ENTER for current date or input a custom date in YYYY-MM-DD: ").strip()
-
         try:
             check_all_updates(CHECK_DATE or None)
             break
@@ -123,3 +121,8 @@ if __name__ == "__main__":
         except Exception:
             logger.exception("Unexpected error occurred while running update_stanza")
             break
+
+
+
+if __name__ == "__main__":
+    run()
