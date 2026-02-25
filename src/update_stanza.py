@@ -19,8 +19,6 @@ def check_all_updates(CHECK_DATE):
     else:
         check_date = datetime.today().date()
 
-    # print(f"Checking updates since: {check_date}\n")
-
     resp = requests.get(OCLC_ALL_URL, timeout=30)
     resp.raise_for_status()
 
@@ -46,7 +44,9 @@ def check_all_updates(CHECK_DATE):
             continue
 
         date_part = full_text.split("(")[-1].replace(")", "").strip()
-
+        if not date_part:
+            date_part = str(check_date)
+            logger.warning("Update date missing for {}, set to current date.",title)
         try:
             update_date = datetime.strptime(date_part, "%Y-%m-%d").date()
         except ValueError:
@@ -92,17 +92,20 @@ def check_all_updates(CHECK_DATE):
         )
 
         logger.warning("Stanzas updated after the specified date that are NOT YET synced locally: {}", len(diff_results))
-        for r in diff_results:
-            diff_path = save_diff_file(r["filename"], r["diff"])
-            logger.info("Diff saved to {}", diff_path)
-            r["diff_path"] = diff_path
-        try:
-            update_email(diff_results)
-        except Exception:
-            logger.warning(
-                "Updates found but failed to send email notification",
-                exc_info=True
-            )
+        if diff_results:
+            for r in diff_results:
+                diff_path = save_diff_file(r["filename"], r["diff"])
+                logger.info("Diff saved to {}", diff_path)
+                r["diff_path"] = diff_path
+            try:
+                update_email(diff_results)
+            except Exception:
+                logger.warning(
+                    "Updates found but failed to send email notification",
+                    exc_info=True
+                )
+        else:
+            logger.info("All stanzas are synced up to date.")
     else:
         logger.info("No updates found.")
         return

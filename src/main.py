@@ -13,7 +13,7 @@ RETRY_DELAY = 3600  # 1 hour
 # Set to None to use today's date automatically
 CHECK_DATE = None
 # Or set manually like "2026-01-01" for testing
-CHECK_DATE = "2026-01-01"
+# CHECK_DATE = "2026-01-01"
 
 # ====================
 
@@ -32,18 +32,21 @@ def execute_sync():
             logger.info(f"Link: {item['link']}\n")
 
         logger.warning("Stanzas updated after the specified date that are NOT YET synced locally: {}", len(diff_results))
-        for r in diff_results:
-            diff_path = save_diff_file(r["filename"], r["diff"])
-            logger.warning("Diff detected for {}", r["filename"])
-            logger.info("Diff saved to {}", diff_path)
-            r["diff_path"] = diff_path
-        try:
-            update_email(diff_results)
-        except Exception:
-            logger.warning(
-                "Updates found but failed to send email notification",
-                exc_info=True
-            )
+        if diff_results:
+            for r in diff_results:
+                diff_path = save_diff_file(r["filename"], r["diff"])
+                logger.warning("Diff detected for {}", r["filename"])
+                logger.info("Diff saved to {}", diff_path)
+                r["diff_path"] = diff_path
+            try:
+                update_email(diff_results)
+            except Exception:
+                logger.warning(
+                    "Updates found but failed to send email notification",
+                    exc_info=True
+                )
+        else:
+            logger.info("All stanzas are synced up to date.")
     else:
         logger.info("No updates found.")
 
