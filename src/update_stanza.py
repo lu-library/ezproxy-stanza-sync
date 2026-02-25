@@ -46,7 +46,8 @@ def check_all_updates(CHECK_DATE):
         date_part = full_text.split("(")[-1].replace(")", "").strip()
         if not date_part:
             date_part = str(check_date)
-            logger.warning("Update date missing for {}, set to current date.",title)
+            if title in mapping.values():
+                logger.warning("Update date missing for {}, set to current date.",title)
         try:
             update_date = datetime.strptime(date_part, "%Y-%m-%d").date()
         except ValueError:
