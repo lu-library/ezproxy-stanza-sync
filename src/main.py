@@ -4,6 +4,7 @@ import traceback
 from pathlib import Path
 from .logging_config import logger
 from .most_recent_update_stanza import check_most_recent_updates
+from .update_config_file import update_config_file
 from .send_email import update_email, error_email
 from .diff_stanza import process_diffs, save_diff_file
 
@@ -12,8 +13,8 @@ MAX_RETRIES = 3
 RETRY_DELAY = 3600  # 1 hour
 # Set to None to use today's date automatically
 CHECK_DATE = None
-# Or set manually like "2026-01-01" for testing
-# CHECK_DATE = "2026-01-01"
+# Or set manually in "YYYY-MM-DD" for testing
+# CHECK_DATE = "2026-04-16"
 
 # ====================
 
@@ -22,6 +23,14 @@ def execute_sync():
     updated_items = check_most_recent_updates(CHECK_DATE)
 
     if updated_items:
+        try:
+            config_path, config_diff_path = update_config_file(updated_items)
+            logger.warning("Config updated successfully")
+            logger.info("New config: {}", config_path)
+            logger.info("Config diff saved to {}", config_diff_path)
+        except Exception:
+            logger.error("Failed to update config", exc_info=True)
+
         diff_results = process_diffs(updated_items)
             
         logger.warning("Stanzas updated after the specified date: {}", len(updated_items))

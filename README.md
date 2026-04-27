@@ -17,6 +17,15 @@ Contains the original mapping data, including:
 ### **mapping.json**
 A generated JSON file that defines the mapping relationship between local stanza filenames and OCUL stanza titles. This file is used by all update-checking scripts.
 
+### **/stanzas** -ignored
+Stores the EZproxy stanza files currently in use by Lakehead University Library.
+
+### **/config** -ignored
+Stores diff files generated from updates to `config.txt`, allowing version tracking and review of configuration changes.
+
+### **/diff** -ignored
+Stores diff files for stanza updates, showing differences between local and OCUL versions.
+
 ## /src
 ### **config.py**
 Centralized configuration for:
@@ -49,6 +58,15 @@ This approach:
 - Minimizes the risk of page timeouts
 - By default, the comparison date is set to the current system date
 This script is recommended for regular (weekly) automated runs.
+
+### **update_config_file.py**
+Update the comment section in config.txt for reference.
+E.g.:
+"# Knovel - last update 2021-05-21
+IncludeFile stanzas/knovel.txt"
+→
+"# Knovel - last update 2026-04-21
+IncludeFile stanzas/knovel.txt"
 
 ### **diff_stanza.py**
 Handles difference between local version and updated version. Save .diff file to /data/diff.   

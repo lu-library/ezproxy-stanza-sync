@@ -6,6 +6,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DIFF_DIR = DATA_DIR / "diff"
 LOG_DIR = BASE_DIR / "logs"
+CONFIG_DIR = DATA_DIR / "config"
+CONFIG_FILE = CONFIG_DIR / "config.txt"
 
 OCLC_MOST_RECENT_URL = (
     "https://help.oclc.org/Library_Management/EZproxy/"
