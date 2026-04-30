@@ -6,6 +6,8 @@ from .logging_config import logger
 from .config import DATA_DIR, OCLC_ALL_URL, BASE_URL
 from .send_email import update_email
 from .diff_stanza import process_diffs, save_diff_file
+from .update_config_file import update_config_file
+from .organize_config_file import organize_config_file
 
 from collections import Counter
 # ===== CHECK ALL UPDATES =====
@@ -45,9 +47,12 @@ def check_all_updates(CHECK_DATE):
 
         date_part = full_text.split("(")[-1].replace(")", "").strip()
         if not date_part:
-            date_part = str(check_date)
-            if title in mapping.values():
-                logger.warning("Update date missing for {}, set to current date.",title)
+            if title == "Coherent Digital Resources":
+                date_part = "2025-03-31"
+            else:
+                date_part = str(check_date)
+                if title in mapping.values():
+                    logger.warning("Update date missing for {}, set to current date.",title)
         try:
             update_date = datetime.strptime(date_part, "%Y-%m-%d").date()
         except ValueError:
@@ -82,6 +87,23 @@ def check_all_updates(CHECK_DATE):
             })
 
     if updated_items:
+        try:
+            config_path, config_diff_path = update_config_file(updated_items)
+            if config_diff_path is not None:
+                logger.info("Config updated successfully")
+                logger.info("New config: {}", config_path)
+                logger.info("Config diff saved to {}", config_diff_path)
+        except Exception:
+            logger.error("Failed to update config", exc_info=True)
+
+        try:
+            config_path, backup_path = organize_config_file()
+            if backup_path is not None:
+                logger.info("Config organized successfully")
+                logger.info("Organized config: {}", config_path)
+        except Exception:
+            logger.error("Failed to organize config", exc_info=True)
+        
         diff_results = process_diffs(updated_items)     
         logger.warning("Stanzas updated after the specified date: {}", len(updated_items))
         for item in updated_items:
@@ -92,7 +114,7 @@ def check_all_updates(CHECK_DATE):
             item["date"]
         )
 
-        logger.warning("Stanzas updated after the specified date that are NOT YET synced locally: {}", len(diff_results))
+        logger.info("Stanzas updated after the specified date that are NOT YET synced locally: {}", len(diff_results))
         if diff_results:
             for r in diff_results:
                 diff_path = save_diff_file(r["filename"], r["diff"])

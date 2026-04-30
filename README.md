@@ -60,13 +60,24 @@ This approach:
 This script is recommended for regular (weekly) automated runs.
 
 ### **update_config_file.py**
-Update the comment section in config.txt for reference.
-E.g.:
-"# Knovel - last update 2021-05-21
+Update the comment section in `config.txt` for reference.
+E.g.:<br>
+"# Knovel - last update 2021-05-21<br>
+IncludeFile stanzas/knovel.txt"<br>
+→<br>
+"# Knovel - last update 2026-04-21<br>
 IncludeFile stanzas/knovel.txt"
-→
-"# Knovel - last update 2026-04-21
-IncludeFile stanzas/knovel.txt"
+
+### **organize_config_file.py**  
+Organizes the `IncludeFile` sections in `config.txt`. The following two sections are sorted independently in A–Z order based on filename:<br><br>
+
+#------------ Start of IncludeFile - Custom Stanzas ------------#<br>
+A to Z based on filename<br>
+#------------ End of IncludeFile - Custom Stanzas ------------#<br><br>
+
+#------------ Start of IncludeFile - OCLC ------------#<br>
+A to Z based on filename<br>
+#------------ End of IncludeFile - OCLC ------------#
 
 ### **diff_stanza.py**
 Handles difference between local version and updated version. Save .diff file to /data/diff.   

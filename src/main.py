@@ -25,9 +25,10 @@ def execute_sync():
     if updated_items:
         try:
             config_path, config_diff_path = update_config_file(updated_items)
-            logger.warning("Config updated successfully")
-            logger.info("New config: {}", config_path)
-            logger.info("Config diff saved to {}", config_diff_path)
+            if config_diff_path is not None:
+                logger.info("Config updated successfully")
+                logger.info("New config: {}", config_path)
+                logger.info("Config diff saved to {}", config_diff_path)
         except Exception:
             logger.error("Failed to update config", exc_info=True)
 

@@ -2,10 +2,20 @@ from datetime import datetime
 from pathlib import Path
 import difflib
 from .config import CONFIG_FILE, CONFIG_DIR, DATA_DIR
+from .logging_config import logger
 
 def extract_filename(line: str) -> str:
     # IncludeFile databases/xxx.txt → xxx.txt
     return Path(line.split()[-1]).name
+
+
+
+def normalize(text: str) -> str:
+    return "\n".join(
+        line.rstrip() for line in text.splitlines()
+        if line.strip() != "" or True
+    )
+
 
 
 def update_config_file(updated_items):
@@ -34,13 +44,15 @@ def update_config_file(updated_items):
 
     new_text = "\n".join(new_lines)
 
+    if normalize(old_text) == normalize(new_text):
+        logger.info("No changes detected. Config file remains unchanged.")
+        return config_path, None
+
     # ===== backup =====
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    backup_path = config_path.with_name(f"config.{timestamp}.txt")
+    backup_path = config_path.with_name(f"config.update.{timestamp}.txt")
 
     backup_path.write_text(old_text, encoding="utf-8")
-    config_path.write_text(new_text, encoding="utf-8")
-
     config_path.write_text(new_text, encoding="utf-8")
 
     diff = difflib.unified_diff(
