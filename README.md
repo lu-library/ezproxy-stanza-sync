@@ -73,11 +73,11 @@ Organizes the `IncludeFile` sections in `config.txt`. The following two sections
 
 #------------ Start of IncludeFile - Custom Stanzas ------------#<br>
 A to Z based on filename<br>
-#------------ End of IncludeFile - Custom Stanzas ------------#<br><br>
+#------------ End of IncludeFile - Custom Stanzas -------------#<br><br>
 
 #------------ Start of IncludeFile - OCLC ------------#<br>
 A to Z based on filename<br>
-#------------ End of IncludeFile - OCLC ------------#
+#------------ End of IncludeFile - OCLC -------------#
 
 ### **diff_stanza.py**
 Handles difference between local version and updated version. Save .diff file to /data/diff.   
