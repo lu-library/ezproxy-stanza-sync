@@ -8,7 +8,7 @@ Rather than scanning the entire OCUL stanza list, this tool focuses exclusively 
 
 # **Project Files Overview**
 
-## /data
+## data
 ### **mapping_source.csv**
 Contains the original mapping data, including:
 - EZproxy stanza filename (used locally)
@@ -17,16 +17,16 @@ Contains the original mapping data, including:
 ### **mapping.json**
 A generated JSON file that defines the mapping relationship between local stanza filenames and OCUL stanza titles. This file is used by all update-checking scripts.
 
-### **/stanzas** -ignored
+### **stanzas** -ignored
 Stores the EZproxy stanza files currently in use by Lakehead University Library.
 
-### **/config** -ignored
+### **config** -ignored
 Stores diff files generated from updates to `config.txt`, allowing version tracking and review of configuration changes.
 
-### **/diff** -ignored
+### **diff** -ignored
 Stores diff files for stanza updates, showing differences between local and OCUL versions.
 
-## /src
+## src
 ### **config.py**
 Centralized configuration for:
 - Project base directories
