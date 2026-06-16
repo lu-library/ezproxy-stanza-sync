@@ -1,16 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-import json
 from datetime import datetime
-from .config import DATA_DIR, OCLC_MOST_RECENT_URL, BASE_URL
+from .config import OCLC_MOST_RECENT_URL, BASE_URL
+from .db import get_title_to_filename
 
 
-# ===== CHECK MOST RECENT UPDATES =====
 def check_most_recent_updates(CHECK_DATE):
-    with open(DATA_DIR / "mapping.json", "r", encoding="utf-8") as f:
-        mapping = json.load(f)
-    # Titles we care about
-    target_titles = set(t.lower() for t in mapping.values())
+    title_to_file = get_title_to_filename()
+    target_titles = set(title_to_file.keys())
 
     if CHECK_DATE:
         check_date = datetime.strptime(CHECK_DATE, "%Y-%m-%d").date()
@@ -21,11 +18,7 @@ def check_most_recent_updates(CHECK_DATE):
     resp.raise_for_status()
 
     soup = BeautifulSoup(resp.text, "html.parser")
-# === Compare using mapping ===
-    updated_items = []
-    title_to_file = {v.lower(): k for k, v in mapping.items()}
 
-# === Find the correct section by h3 title ===
     target_h3 = None
     for h3 in soup.find_all("h3"):
         if "Recently updated database stanzas" in h3.get_text():
@@ -36,14 +29,14 @@ def check_most_recent_updates(CHECK_DATE):
         print("Could not find recent updates section.")
         exit()
 
-# The table should follow the h3
     table = target_h3.find_next("table")
 
     if not table:
         print("No table found after recent updates header.")
         exit()
 
-# === Parse table rows ===
+    updated_items = []
+
     for row in table.find_all("tr"):
         cols = row.find_all("td")
         if len(cols) < 2:
@@ -69,12 +62,12 @@ def check_most_recent_updates(CHECK_DATE):
             if link.startswith("/"):
                 link = BASE_URL + link
 
-            filename = title_to_file.get(title.lower(), "UNKNOWN")
+            filename = title_to_file[title.lower()]
             updated_items.append({
                 "filename": filename,
                 "title": title,
                 "date": str(update_date),
-                "link": link
+                "link": link,
             })
 
     return updated_items

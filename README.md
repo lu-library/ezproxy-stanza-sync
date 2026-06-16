@@ -1,127 +1,170 @@
-# **Purpose**
+# EZProxy Stanza Sync
 
-This project monitors updates to specific EZproxy stanza files published on OCUL’s website, based on the EZproxy configuration needs of Lakehead University Library.
+Monitors updates to EZproxy stanza files published on the OCUL website, scoped to the stanzas actively used by Lakehead University Library.
 
-OCUL maintains over 1,000 EZproxy stanzas, while Lakehead University Library only uses a limited subset.
-Rather than scanning the entire OCUL stanza list, this tool focuses exclusively on checking updates for the stanzas that are actually in use, improving efficiency and reducing unnecessary load.
+OCUL maintains over 1,000 EZproxy stanzas; this tool tracks only the subset in use, improving efficiency and avoiding unnecessary load on the OCUL site.
 
+---
 
-# **Project Files Overview**
+## Setup
 
-## /data
-### **mapping_source.csv**
-Contains the original mapping data, including:
-- EZproxy stanza filename (used locally)
-- Corresponding stanza title as listed on the OCUL website
+### 1. Install uv
 
-### **mapping.json**
-A generated JSON file that defines the mapping relationship between local stanza filenames and OCUL stanza titles. This file is used by all update-checking scripts.
+Install [uv](https://github.com/astral-sh/uv) (Python environment manager), then restart your terminal.
 
-### **/stanzas** -ignored
-Stores the EZproxy stanza files currently in use by Lakehead University Library.
+### 2. Set up the Python environment
 
-### **/config** -ignored
-Stores diff files generated from updates to `config.txt`, allowing version tracking and review of configuration changes.
+```bash
+git clone https://github.com/lu-library/ezproxy-stanza-sync
+cd ezproxy-stanza-sync
+uv sync
+```
 
-### **/diff** -ignored
-Stores diff files for stanza updates, showing differences between local and OCUL versions.
+`uv sync` will install Python 3.10 (if not already present), create a virtual environment, and install all required packages.
 
-## /src
-### **config.py**
-Centralized configuration for:
-- Project base directories
-- Data and log paths
-- OCUL URLs
+### 3. (Optional) Enable email notifications
 
-### **logging_config.py**
-Initializes Loguru logging configuration, including:
-- Log file location
-- Log rotation policy
-- Log level
+Email notifications are disabled by default. To enable them, uncomment the `update_email` and `error_email` calls in `src/main.py` and `src/update_stanza.py`.
 
-### **generate_mapping.py**
-Generates mapping.json from mapping_source.csv, creating a structured mapping between local stanza filenames and OCUL stanza titles.
+Then configure credentials via environment variables:
 
-### **validate_mapping.py**
-Validates whether each stanza title in mapping.json exists on the OCUL website.    
-**_Note: This validation uses strict title matching._**    
-Occasionally, OCUL may update or rename stanza titles (for example, University of Chicago Press Journals was later changed to University of Chicago Press), which may cause mismatches even though the stanza refers to the same resource.
+```bash
+# Add to ~/.bashrc or ~/.profile
+export EMAIL_SENDER="your_email@gmail.com"
+export EMAIL_RECEIVER="receiver_email@gmail.com"
+export EMAIL_PASSWORD="your_app_password"
 
-### **update_stanza.py**
-Checks whether any stanzas listed in mapping.json have been updated on the OCUL website after a specified date. By default, the comparison date is set to the current system date, but a custom date can be provided. **_This script is intended for manual or infrequent use (e.g. initial deployment or long gaps between checks)._**
+source ~/.bashrc
+```
 
-### **most_recent_update_stanza.py**
-Monitors only the “Recently updated database stanzas” section on OCUL’s website.
-This approach:
-- Avoids querying the full stanza list
-- Reduces load on the OCUL site
-- Minimizes the risk of page timeouts
-- By default, the comparison date is set to the current system date
-This script is recommended for regular (weekly) automated runs.
+> A Gmail App Password can be generated after enabling 2-step verification on your Google account.
 
-### **update_config_file.py**
-Update the comment section in `config.txt` for reference.
-E.g.:<br>
-"# Knovel - last update 2021-05-21<br>
-IncludeFile stanzas/knovel.txt"<br>
-→<br>
-"# Knovel - last update 2026-04-21<br>
-IncludeFile stanzas/knovel.txt"
+### 4. Run the tool
 
-### **organize_config_file.py**  
-Organizes the `IncludeFile` sections in `config.txt`. The following two sections are sorted independently in A–Z order based on filename:<br><br>
+**Option A — Terminal (CLI):**
 
-#------------ Start of IncludeFile - Custom Stanzas ------------#<br>
-A to Z based on filename<br>
-#------------ End of IncludeFile - Custom Stanzas -------------#<br><br>
+```bash
+cd /path/to/ezproxy-stanza-sync
+uv run -m src.cli stanza sync
+```
 
-#------------ Start of IncludeFile - OCLC ------------#<br>
-A to Z based on filename<br>
-#------------ End of IncludeFile - OCLC -------------#
+**Option B — GUI (packaged app):**
 
-### **diff_stanza.py**
-Handles difference between local version and updated version. Save .diff file to /data/diff.   
+Build the application:
 
-### **send_email.py**
-Handles email notifications.
-- Email credentials are managed via environment variables
-- Gmail App Password is required (available after enabling 2-step verification)
+```bash
+pyinstaller --onedir --windowed --name EZproxy-Config gui-import.py
+```
 
-### **main.py**
-The primary entry point for scheduled execution. Runs the **most recent update check** with retry logic, logging, and email notifications.
+After building:
 
-# **How it works**
-1. Install uv (Python environment manager),and restart terminal after installation.
-2. Setup Python Environment
-    - Clone the repository:
-        git clone https://github.com/lu-library/ezproxy-stanza-sync   
-        cd /path/to/repo   
-    - Sync environment and dependencies:
-        uv sync   
-    This will:
-        - Install Python 3.10 (if not present)
-        - Create a virtual environment
-        - Install required packages
-3. Email Notification Setup, email credentials are stored using environment variables:    
-    Add to ~/.bashrc or ~/.profile:    
-        export EMAIL_SENDER="your_email@gmail.com"     
-        export EMAIL_RECEIVER="receiver_email@gmail.com"      
-        export EMAIL_PASSWORD="your_app_password"      
-    Reload:   
-        source ~/.bashrc   
-    _Gmail app password can be generated after enabling 2-step verification._   
-4. Initial Update Check:
-    cd /path/to/ezproxy-stanza-sync    
-    uv run -m src.update_stanza    
-5. Schedule with Cron:     
-    Edit cron jobs:   
-        crontab -e   
-    Example (run every Monday at 2am):   
-        0 2 * * 1 cd /path/to/ezproxy-stanza-sync && uv run -m src.main >> logs/stanza.log 2>&1    
+- **macOS:** Place the `/data` folder in the same directory as `EZproxy-Config.app`.
+- **Windows:** Place the `/data` folder in the same directory as `EZproxy-Config.exe`.
 
+Once the `/data` folder is in place, the entire `EZproxy-Config` folder can be moved anywhere and run without path adjustments.
 
-# **Scope and Limitations**
-1. This tool only checks EZproxy stanzas that exist on the OCUL website.
-2. Custom EZproxy stanzas created specifically by Lakehead University Library are not included, as there is no corresponding OCUL reference for comparison.
-3. The tool does not automatically download or deploy updated stanzas. It only identifies updates and provides relevant links for review.
-5. most_recent_update_stanza.py is recommended for regular monitoring. If there has been a long gap between checks or significant changes are suspected, run update_stanza.py manually before resuming scheduled checks.
+### 5. (Optional) Schedule with cron
+
+```bash
+crontab -e
+```
+
+Example — run every Monday at 2 AM:
+
+```
+0 2 * * 1 cd /path/to/ezproxy-stanza-sync && uv run -m src.main >> logs/stanza.log 2>&1
+```
+
+---
+
+## GUI Reference
+
+### First-time setup
+
+| Button | When to use |
+|--------|-------------|
+| **LoadDB** | Run once at the start — loads stanza info from `config.txt` into the database. Skip if a database already exists. |
+
+### Ongoing maintenance
+
+| Button | When to use |
+|--------|-------------|
+| **Sync** | Run weekly — checks for OCLC updates from the past month, with retry logic. |
+| **Audit** | Run if more than a month has passed since the last sync — performs a full historical check going back to 2006. |
+| **Pack** | Run when a backup is needed — zips `config.txt` and `/stanzas` into `ez-config-DATE.zip`. |
+| **Check** | Run occasionally — verifies that `IncludeFile` entries in `config.txt` match the database. |
+
+### Adding a new stanza
+
+1. Click **Add Stanza** to add the stanza entry to the database.
+2. Manually create a `.txt` file for the new stanza and place it under `/data/stanzas/`.
+3. Click **Render** to regenerate `config.txt` with the new stanza included.
+
+> **Render** can also be run on its own at any time, but it is primarily useful after adding one or more stanzas.
+
+---
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `uv run -m src.cli stanza sync` | Check for recent OCLC updates (weekly task) |
+| `uv run -m src.cli stanza audit` | Full historical update check |
+| `uv run -m src.cli stanza render` | Regenerate `config.txt` from the Jinja2 template and database |
+| `uv run -m src.cli stanza loaddb` | Populate `stanzas.db` from `config.txt` |
+| `uv run -m src.cli stanza check` | Verify `IncludeFile` entries in `config.txt` match the database |
+| `uv run -m src.cli pack` | Zip `config.txt` and `/stanzas` into a dated archive |
+
+---
+
+## Project Structure
+
+### `data/` (git-ignored)
+
+| Path | Description |
+|------|-------------|
+| `stanzas.db` | SQLite database storing stanza metadata |
+| `stanzas/` | EZproxy stanza `.txt` files currently in use |
+| `config/` | `config.txt`, timestamped backups, and Jinja2 templates (`config.tpl`, `header.tpl`, `footer.tpl`, `alumni.tpl`) |
+| `diff/` | Diff files showing differences between local and OCUL versions of updated stanzas |
+| `log/` | Log files from sync and audit runs |
+
+### `src/`
+
+**Core functions**
+
+| File | Description |
+|------|-------------|
+| `update_stanza.py` | Checks all stanzas in the database against the OCUL website for updates after a given date (defaults to today). Intended for manual or infrequent use — e.g., initial deployment or after a long gap between checks. |
+| `most_recent_update_stanza.py` | Monitors only the "Recently updated database stanzas" section on the OCUL website. Faster and lighter than a full scan. **Recommended for regular weekly runs.** |
+
+**Built-in utilities**
+
+| File | Description |
+|------|-------------|
+| `diff_stanza.py` | Compares local stanza versions against updated OCUL versions and saves `.diff` files to `/data/diff/`. |
+| `send_email.py` | Handles email notifications. Credentials are read from environment variables; requires a Gmail App Password. |
+| `generate_config.py` | Generates `config.txt` from scratch using Jinja2 templates and database content. |
+| `update_config_file.py` | Updates the comment header for each stanza entry in `config.txt` (e.g., updates `# Knovel - last update 2021-05-21` to reflect the current date). |
+| `organize_config_file.py` | Sorts `IncludeFile` entries in `config.txt` alphabetically by filename, independently within the Custom Stanzas and OCLC sections. |
+| `zippack.py` | Packages the current `config.txt` and stanza files into a `.zip` archive for backup or transfer. |
+
+**Configuration and infrastructure**
+
+| File | Description |
+|------|-------------|
+| `main.py` | Primary entry point for scheduled runs. Executes the most-recent update check with retry logic. |
+| `cli.py` | Maps CLI subcommands to their corresponding functions. |
+| `config.py` | Centralized path and URL configuration (project directories, data paths, OCUL URLs). |
+| `logging_config.py` | Initializes Loguru logging — sets log file location, rotation policy, and log level. |
+| `db.py` | Database connection and all database-related functions (queries, rendering, adding stanzas, etc.). |
+| `gui-import.py` | GUI built by importing functions directly. Supports packaging with PyInstaller and can be run from any location. **Use this for deployment.** |
+| `gui-cli.py` | Earlier GUI implementation that invoked CLI subprocesses. Packaged apps generated from this file cannot be moved to a different directory. Retained for reference only — use `gui-import.py` instead. |
+
+---
+
+## Scope and Limitations
+
+- Only tracks stanzas that exist on the OCUL website. Custom stanzas created specifically for Lakehead University Library are not monitored, as there is no OCUL reference to compare against.
+- Does not automatically download or deploy updated stanzas. It identifies updates and provides relevant links for manual review.
+- For regular use, `most_recent_update_stanza.py` (or the **Sync** button) is recommended. If there has been a long gap between checks, run `update_stanza.py` (or **Audit**) before resuming weekly syncs.

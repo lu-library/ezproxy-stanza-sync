@@ -4,9 +4,10 @@ __pycache__/
 .venv/
 
 # Data
-data/stanzas/
-data/diff/
-data/config/
+data/
+*.db
+*.db-shm
+*.db-wal
 
 # Logs
 logs/
@@ -14,7 +15,13 @@ logs/
 
 # Local environment files
 .env
+*.egg-info
+*.spec
 
 # OS files
 .DS_Store
 Thumbs.db
+
+#application
+build/
+dist/

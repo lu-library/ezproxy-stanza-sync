@@ -5,7 +5,6 @@ from pathlib import Path
 from .logging_config import logger
 from .most_recent_update_stanza import check_most_recent_updates
 from .update_config_file import update_config_file
-from .send_email import update_email, error_email
 from .diff_stanza import process_diffs, save_diff_file
 
 # ====== CONFIG ======
@@ -23,6 +22,7 @@ def execute_sync():
     updated_items = check_most_recent_updates(CHECK_DATE)
 
     if updated_items:
+        # update config file
         try:
             config_path, config_diff_path = update_config_file(updated_items)
             if config_diff_path is not None:
@@ -48,6 +48,7 @@ def execute_sync():
                 logger.warning("Diff detected for {}", r["filename"])
                 logger.info("Diff saved to {}", diff_path)
                 r["diff_path"] = diff_path
+            """
             try:
                 update_email(diff_results)
             except Exception:
@@ -55,6 +56,7 @@ def execute_sync():
                     "Updates found but failed to send email notification",
                     exc_info=True
                 )
+            """
         else:
             logger.info("All stanzas are synced up to date.")
     else:
@@ -75,8 +77,8 @@ def run():
             if attempt < MAX_RETRIES:
                 time.sleep(RETRY_DELAY)
             else:
-                logger.error("Sending error email with traceback:\n%s", tb)
-                error_email(tb)
+                logger.error("Traceback:\n%s", tb)
+                # error_email(tb)
                 sys.exit(1)
 
 

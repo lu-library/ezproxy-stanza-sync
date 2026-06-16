@@ -7,7 +7,6 @@ from pathlib import Path
 import difflib
 from datetime import datetime
 from .config import DIFF_DIR, DATA_DIR
-from .send_email import error_email
 
 class StanzaNotFoundError(RuntimeError):
     pass

@@ -1,28 +1,23 @@
 from datetime import datetime
 from pathlib import Path
 import difflib
-from .config import CONFIG_FILE, CONFIG_DIR, DATA_DIR
+from .config import CONFIG_FILE, DATA_DIR
+from .db import update_date
 from .logging_config import logger
 
+
 def extract_filename(line: str) -> str:
-    # IncludeFile databases/xxx.txt → xxx.txt
     return Path(line.split()[-1]).name
 
 
-
 def normalize(text: str) -> str:
-    return "\n".join(
-        line.rstrip() for line in text.splitlines()
-        if line.strip() != "" or True
-    )
-
+    return "\n".join(line.rstrip() for line in text.splitlines() if line.strip() != "" or True)
 
 
 def update_config_file(updated_items):
     updated_map = {item["filename"]: item for item in updated_items}
 
     config_path = CONFIG_FILE
-
     old_text = config_path.read_text(encoding="utf-8")
     lines = old_text.splitlines()
     new_lines = []
@@ -60,13 +55,22 @@ def update_config_file(updated_items):
         new_text.splitlines(),
         fromfile="config_old",
         tofile="config_new",
-        lineterm=""
+        lineterm="",
     )
-
     diff_text = "\n".join(diff)
 
     diff_path = DATA_DIR / "diff/config" / f"{timestamp}_config.diff"
     diff_path.parent.mkdir(exist_ok=True)
     diff_path.write_text(diff_text, encoding="utf-8")
-
+    
+    # """
+    # Persist updated dates to DB
+    for item in updated_items:
+        n = update_date(item["filename"], item["date"])
+        if n:
+            logger.info("DB updated ({} row(s)): {} → {}", n, item["filename"], item["date"])
+        else:
+            logger.warning("DB: no row found for {}", item["filename"])
+    # """
+    
     return config_path, diff_path

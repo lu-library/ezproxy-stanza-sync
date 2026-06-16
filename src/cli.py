@@ -1,5 +1,6 @@
 import typer
-from src import main, update_stanza, generate_mapping, validate_mapping
+from src import main, update_stanza, generate_config, db, zippack
+from src.config import CONFIG_FILE, DATA_DIR
 
 app = typer.Typer()
 
@@ -7,7 +8,6 @@ stanza_app = typer.Typer()
 mapping_app = typer.Typer()
 
 app.add_typer(stanza_app, name="stanza")
-app.add_typer(mapping_app, name="mapping")
 
 
 @stanza_app.command()
@@ -17,22 +17,35 @@ def sync():
 
 
 @stanza_app.command()
-def audit():
+def audit(
+    check_date: str = typer.Argument(default="", help="Date in YYYY-MM-DD, or blank for today.")
+):
     """Run full historical update check."""
-    update_stanza.run()
+    update_stanza.run(check_date or None)
 
 
-@mapping_app.command()
-def build():
-    """Build mapping.json."""
-    generate_mapping.run()
+@stanza_app.command()
+def render():
+    """Render config.txt from Jinja2 templates."""
+    generate_config.run()
 
 
-@mapping_app.command()
+@stanza_app.command()
+def loaddb():
+    """Populate stanzas.db from config.txt."""
+    db.load_db()
+
+
+@stanza_app.command()
 def check():
-    """Validate mapping.json consistency."""
-    validate_mapping.run()
+    """Check that IncludeFile entries in config.txt match the DB."""
+    db.check()
 
+
+@app.command()
+def pack():
+    """Zip config.txt and stanzas/ into ez-config-date-time.zip."""
+    zippack.run()
 
 if __name__ == "__main__":
     app()
